@@ -1,0 +1,98 @@
+﻿@model IEnumerable<PJC.Models.Sach>
+@{ ViewData["Title"] = "Index";
+    Layout = "~/Areas/PageReview/Views/Shared/_LayoutReView.cshtml"; }
+<style>
+    .hidden {
+        opacity: 0;
+        visibility: hidden;
+        display: none;
+    }
+
+    .search-fa {
+        padding-top: 10px;
+    }
+
+    .button-add-to-cart {
+        position: absolute;
+        bottom: 10%;
+    }
+
+    .media-wrapper {
+        position: relative;
+    }
+
+    .button-add-to-cart-wrapper {
+        height: 50px;
+    }
+</style>
+<section class="section bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="search-fa">
+                <p>Tìm Kiếm:</p>
+            </div>
+            <div class="col-md-6">
+                <form action="~/PageReview/Product/Index" method="post">
+                    <input class="form-control" type="text" name="searchString" placeholder="Nhập tên sách, thể loại, tác giả..." />
+                </form>
+            </div>
+
+        </div>
+        <div class="row">
+            <br />
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <div class="row list ">
+                            @foreach (var item in Model)
+                            {
+
+                <div class="col-md-6 col-lg-4 media-wrapper @item.TheLoai  item All">
+                    <div class="media block-6 d-block">
+                        <div class="media-body ">
+                            <a href="~/PageReview/Product/Detail/@item.MaSach">
+                                <img src="@item.ImageUrl" class="imageCell" style="width: 200px; height:300px" />
+                            </a>
+                            <h3 class="heading">@item.TenSach</h3>
+                            <p><strong>Giá: </strong>@item.GiaTien</p>
+                            <p><strong>Số lượng: </strong>@item.SoLuong</p>
+                            <div class="button-add-to-cart-wrapper">
+                                <button id="button-add-to-cart" onclick="addToCart('@item.MaSach')" class="button-add-to-cart">Thêm vào giỏ hàng</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
+                        </div>
+
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+$('#selectType').on('change', function () {
+        var type = $('#selectType').val();
+        console.log(type);
+        $('.list .item').each(function () {
+            if ($(this).hasClass(type)) {
+                $(this).removeClass('hidden');
+                $(this).addClass('zoomIn animated');
+            }
+            else {
+                $(this).addClass('hidden');
+                $(this).removeClass('zoomIn animated');
+            }
+        });
+        });
+    async function addToCart(code) {
+        const formData = new FormData()
+        formData.append('code', code)
+        try {
+            const result = await axios.post('/PageReview/Cart/AddToCart', formData)
+            alert('Add success')
+        } catch (err) {
+            console.log(err)
+        }
+    }
+</script>
